@@ -1,0 +1,44 @@
+{
+  "name": "alnv/reindesign-xml-import",
+  "type": "contao-bundle",
+  "description": "",
+  "authors": [
+    {
+      "name": "Alexander Naumov",
+      "homepage": "https://www.alexandernaumov.de",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Reindesign\\XmlImportBundle\\": "src/"
+    },
+    "classmap": [
+      "src/Resources/contao/"
+    ],
+    "exclude-from-classmap": [
+      "src/Resources/contao/config/",
+      "src/Resources/contao/dca/",
+      "src/Resources/contao/languages/"
+    ]
+  },
+  "require": {
+    "php": "^7.0",
+    "symfony/framework-bundle": "3.4.* || 4.1.*",
+    "contao/core-bundle": "^4.4"
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "replace": {
+    "contao-legacy/reindesign-xml-import": "self.version"
+  },
+  "extra": {
+    "contao": {
+      "sources": {
+        "": "system/modules/reindesign-xml-import"
+      }
+    },
+    "contao-manager-plugin": "Reindesign\\XmlImportBundle\\ContaoManager\\Plugin"
+  }
+}
