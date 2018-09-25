@@ -20,6 +20,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface {
 
             BundleConfig::create('Reindesign\XmlImportBundle\ReindesignXmlImportBundle')
                 ->setLoadAfter(['Contao\CoreBundle\ContaoCoreBundle'])
+                ->setLoadAfter(['Contao\GeoCoding\ContaoGeoCodingBundle'])
                 ->setReplace(['reindesign-xml-import']),
         ];
     }

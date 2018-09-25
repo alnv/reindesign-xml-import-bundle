@@ -98,10 +98,25 @@ class XmlParser {
                 $strFieldname = isset( $this->arrMap[ $strXmlName ] ) ? $this->arrMap[ $strXmlName ] : $strXmlName;
 
                 $arrData[ $strFieldname ] = $this->parseValue( $strValue, $strFieldname );
+            }
 
-                if ( $this->blnGeoCoding ) {
+            if ( $this->blnGeoCoding ) {
 
-                    //
+                $arrAddress = [];
+
+                foreach ( $this->arrGeoFields as $strField ) {
+
+                    if ( $arrData[ $strField ] ) {
+
+                        $arrAddress[] = $arrData[ $strField ];
+                    }
+                }
+
+                if ( !empty( $arrAddress ) ) {
+
+                    $objGeoCoding = new \Contao\GeoCoding\Library\GeoCoding();
+                    $arrResults = $objGeoCoding->getGeoCodingByAddress( implode( ',', $arrAddress ), 'de' );
+                    $arrData[ $this->arrGeoDestination ] = $arrResults['latitude'] . ',' . $arrResults['longitude']; // @todo allow to seperate values
                 }
             }
 

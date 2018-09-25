@@ -6,6 +6,7 @@ namespace Reindesign\XmlImportBundle\Library;
 class Import {
 
 
+    protected $strTable;
     protected $objDatabase = null;
 
 
@@ -15,14 +16,27 @@ class Import {
 
             $this->objDatabase = \Database::getInstance();
         }
+
+        $this->strTable = \Config::get( 'xmlTable' );
     }
 
 
     public function execute() {
 
+        if ( !$this->strTable ) {
+
+            return null;
+        }
+
         $objXmlImport = new XmlParser();
         $arrEntities = $objXmlImport->parse();
 
-        // var_dump( $arrEntities ); exit;
+        if ( is_array( $arrEntities ) && !empty( $arrEntities ) ) {
+
+            foreach ( $arrEntities as $arrEntity ) {
+
+                // $this->objDatabase->prepare( "INSERT INTO ". $this->strTable ." %s" )->set( $arrEntity )->execute();
+            }
+        }
     }
 }

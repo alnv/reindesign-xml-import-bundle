@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 
-class ReindesignXmlImportBundleExtension extends Extension {
+class ReindesignXmlImportExtension extends Extension {
 
 
     public function load( array $configs, ContainerBuilder $container ) {
