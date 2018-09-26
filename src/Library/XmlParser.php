@@ -21,8 +21,10 @@ class XmlParser {
 
         $this->arrConfig = [
 
+            'xmlUseId' => false,
             'xmlSource' => null,
             'xmlKeyname' => null,
+            'xmlIdName' => 'id',
             'xmlGeoFields' => [],
             'xmlDateFields' => [],
             'xmlGeoDestination' => '',
@@ -100,6 +102,11 @@ class XmlParser {
             $arrEntity = (array) $objEntity;
 
             foreach ( $arrEntity as $strFieldname => $strValue ) {
+
+                if ( $this->arrConfig['xmlUseId'] && $strFieldname == $this->arrConfig['xmlIdName'] ) {
+
+                    $arrData['id'] = (int) $strValue;
+                }
 
                 $strXmlName = \StringUtil::generateAlias( $strFieldname );
                 $strFieldname = isset( $this->arrMap[ $strXmlName ] ) ? $this->arrMap[ $strXmlName ] : $strXmlName;
