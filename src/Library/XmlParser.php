@@ -103,9 +103,10 @@ class XmlParser {
 
             foreach ( $arrEntity as $strFieldname => $strValue ) {
 
-                if ( $this->arrConfig['xmlUseId'] && $strFieldname == $this->arrConfig['xmlIdName'] ) {
+                if ( $this->arrConfig['xmlUseId'] && $strFieldname == $this->arrConfig['xmlIdName'] ) { // project specific
 
                     $arrData['id'] = (int) $strValue;
+                    $arrData['alias'] = (string) $strValue;
                 }
 
                 $strXmlName = \StringUtil::generateAlias( $strFieldname );
