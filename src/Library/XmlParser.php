@@ -6,52 +6,59 @@ namespace Reindesign\XmlImportBundle\Library;
 class XmlParser {
 
 
-    protected $strDate;
-    protected $strSource;
+    protected $arrConfig;
     protected $arrMap = [];
-    protected $arrDateTypes = [];
-    protected $arrGeoFields = [];
-    protected $blnGeoCoding = false;
-    protected $arrGeoDestination = [];
+
 
     public function __construct() {
 
         $this->setMap();
-        $this->strDate = \Config::get( 'dateFormat' );
-        $this->strSource = \Config::get( 'xmlSource' );
-        $this->strKeyname = \Config::get( 'xmlKeyname' );
-        $this->arrDateTypes = \Config::get( 'xmlDateFields' );
+        $this->setConfig();
+    }
 
-        $this->arrGeoFields = \Config::get( 'xmlGeoFields' );
-        $this->blnGeoCoding = \Config::get( 'xmlUseGeoCoding' );
-        $this->arrGeoDestination = \Config::get( 'xmlGeoDestination' );
 
-        if ( \Config::get( 'xmlDateFormat' ) ) {
+    protected function setConfig() {
 
-            $this->strDate = \Config::get( 'xmlDateFormat' );
+        $this->arrConfig = [
+
+            'xmlSource' => null,
+            'xmlKeyname' => null,
+            'xmlGeoFields' => [],
+            'xmlDateFields' => [],
+            'xmlGeoDestination' => '',
+            'xmlUseGeoCoding' => false,
+            'xmlDateFormat' => \Config::get( 'dateFormat' )
+        ];
+
+        foreach ( $this->arrConfig as $strKey => $strValue ) {
+
+            if ( \Config::get( $strKey ) !== null ) {
+
+                $this->arrConfig[ $strKey ] = \Config::get( $strKey );
+            }
         }
     }
 
 
     protected function read() {
 
-        if ( substr( $this->strSource, 0, 4 ) === 'http' ) {
+        if ( substr( $this->arrConfig['xmlSource'], 0, 4 ) === 'http' ) {
 
-            $objFile = new XmlFile( $this->strSource );
+            $objFile = new XmlFile( $this->arrConfig['xmlSource'] );
         }
 
         else {
 
-            $objFile = new \File( $this->strSource, true );
+            $objFile = new \File( $this->arrConfig['xmlSource'], true );
 
             if ( !$objFile->exists() ) {
 
-                \System::log( 'File to import ' . $this->strSource . ' doesn\'t exist.', __METHOD__, TL_ERROR );
+                \System::log( 'File to import ' . $this->arrConfig['xmlSource'] . ' doesn\'t exist.', __METHOD__, TL_ERROR );
             }
 
             if ( $objFile->extension !== 'xml' ) {
 
-                \System::log( 'File ' . $this->strSource . ' is not an XML file.', __METHOD__, TL_ERROR );
+                \System::log( 'File ' . $this->arrConfig['xmlSource'] . ' is not an XML file.', __METHOD__, TL_ERROR );
             }
         }
 
@@ -87,7 +94,7 @@ class XmlParser {
 
         $arrEntities = [];
 
-        foreach ( $objXml->{$this->strKeyname} as $objEntity ) {
+        foreach ( $objXml->{$this->arrConfig['xmlKeyname']} as $objEntity ) {
 
             $arrData = [];
             $arrEntity = (array) $objEntity;
@@ -100,11 +107,11 @@ class XmlParser {
                 $arrData[ $strFieldname ] = $this->parseValue( $strValue, $strFieldname );
             }
 
-            if ( $this->blnGeoCoding ) {
+            if ( $this->arrConfig['xmlUseGeoCoding'] ) {
 
                 $arrAddress = [];
 
-                foreach ( $this->arrGeoFields as $strField ) {
+                foreach ( $this->arrConfig['xmlGeoFields'] as $strField ) {
 
                     if ( $arrData[ $strField ] ) {
 
@@ -116,7 +123,7 @@ class XmlParser {
 
                     $objGeoCoding = new \Contao\GeoCoding\Library\GeoCoding();
                     $arrResults = $objGeoCoding->getGeoCodingByAddress( implode( ',', $arrAddress ), 'de' );
-                    $arrData[ $this->arrGeoDestination ] = $arrResults['latitude'] . ',' . $arrResults['longitude']; // @todo allow to seperate values
+                    $arrData[ $this->arrConfig['xmlGeoDestination'] ] = $arrResults['latitude'] . ',' . $arrResults['longitude']; // @todo allow to seperate values
                 }
             }
 
@@ -131,9 +138,9 @@ class XmlParser {
 
         $strValue = (string) $strValue;
 
-        if ( in_array( $strFieldname, $this->arrDateTypes ) ) {
+        if ( in_array( $strFieldname, $this->arrConfig['xmlDateFields'] ) ) {
 
-            $objDate = new \Date( $strValue, $this->strDate );
+            $objDate = new \Date( $strValue, $this->arrConfig['xmlDateFormat'] );
 
             return $objDate->tstamp;
         }

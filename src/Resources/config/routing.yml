@@ -1,0 +1,3 @@
+xmlimport:
+    resource: "@ReindesignXmlImportBundle/Controller"
+    type: annotation
