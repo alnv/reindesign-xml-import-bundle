@@ -25,6 +25,7 @@
   "require": {
     "php": "^7.0",
     "symfony/framework-bundle": "3.4.* || 4.1.*",
+    "sensio/framework-extra-bundle": "^5.2",
     "contao/core-bundle": "^4.4",
     "alnv/contao-geocoding": "^1.0"
   },
